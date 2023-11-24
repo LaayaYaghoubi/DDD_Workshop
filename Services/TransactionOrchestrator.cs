@@ -4,6 +4,7 @@ public class TransactionOrchestrator
 {
     readonly Transactions transactions;
     readonly ITransferService transferService;
+
     public TransactionOrchestrator(Transactions transactions, ITransferService transferService)
     {
         this.transactions = transactions;
@@ -15,6 +16,9 @@ public class TransactionOrchestrator
         string debitAccountId,
         decimal amount)
     {
+        if (amount < 0)
+            throw new InvalidOperationException("Transfer amount can not be negative");
+        
         var transaction = Transaction.Draft(
             Guid.NewGuid().ToString(),
             DateTime.Now,
@@ -26,6 +30,5 @@ public class TransactionOrchestrator
         transaction.Commit(transferService);
 
         transactions.Add(transaction);
-
     }
 }
