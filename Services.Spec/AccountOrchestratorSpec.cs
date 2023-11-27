@@ -1,5 +1,6 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Services.Exceptions;
 
 namespace Services.Spec;
 
@@ -26,7 +27,7 @@ public class AccountOrchestratorSpec
         var openAccountAction = () => accountOrchestrator.OpenAccount(accountId, -Math.Abs(balance));
 
         openAccountAction.Should()
-            .Throw<InvalidOperationException>("Accounts cannot be initialized with negative balance.");
+            .ThrowExactly<MoneyCanNotBeNegativeException>();
     }
 
 
@@ -42,6 +43,6 @@ public class AccountOrchestratorSpec
         var openAccountAction = () => accountOrchestrator.OpenAccount(accountId, Math.Abs(balance));
 
         openAccountAction.Should()
-            .Throw<InvalidOperationException>($"An account with ID '{accountId}' already exists.");
+            .ThrowExactly<DuplicateAccountIdException>();
     }
 }

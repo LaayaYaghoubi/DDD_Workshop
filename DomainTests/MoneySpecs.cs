@@ -1,6 +1,7 @@
 using AutoFixture.Xunit2;
 using DomainTests.Doubles;
 using FluentAssertions;
+using Services.Exceptions;
 
 namespace DomainTests;
 
@@ -31,7 +32,7 @@ public class MoneySpecs
                 
                 Build.AMoney.WithNegativeValue(amount).Please()) 
             
-            .Should().Throw<Exception>();
+            .Should().Throw<MoneyCanNotBeNegativeException>();
 
     [Theory, AutoData]
     public void Supports_subtraction_when_left_is_greater(uint five)
@@ -64,7 +65,7 @@ public class MoneySpecs
         
         var subtractAction = () => left - right;
         
-        subtractAction.Should().Throw<Exception>();
+        subtractAction.Should().Throw<MoneyCanNotBeNegativeException>();
     }
 
     [Fact]

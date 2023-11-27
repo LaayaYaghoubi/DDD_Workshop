@@ -1,5 +1,6 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Services.Exceptions;
 
 namespace Services.Spec;
 
@@ -110,7 +111,7 @@ public class TransactionOrchestratorSpecs
         var transferAction = () =>
             sut.DraftTransfer("transaction Id", creditAccount.Id, debitAccountId, negativeAmount, now, description);
 
-        transferAction.Should().Throw<InvalidOperationException>("Transfer amount can not be negative");
+        transferAction.Should().ThrowExactly<TransferAmountCanNotBeNegativeException>();
     }
 
     [Theory, AutoMoqData]
@@ -137,7 +138,7 @@ public class TransactionOrchestratorSpecs
 
         var transferAction = () => sut.CommitTransfer(transactionId);
 
-        transferAction.Should().Throw<InvalidOperationException>("No enough charge");
+        transferAction.Should().ThrowExactly<NoEnoughChargeException>();
     }
 
     [Theory, AutoMoqData]
@@ -160,6 +161,6 @@ public class TransactionOrchestratorSpecs
         var transferAction = () => sut.CommitTransfer(transactionId);
 
         transferAction.Should()
-            .Throw<InvalidOperationException>($"Credit account with the id '{dummyCreditAccountId}' not found.");
+            .ThrowExactly<CreditAccountNotFoundException>();
     }
 }

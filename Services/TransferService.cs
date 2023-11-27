@@ -1,3 +1,5 @@
+using Services.Exceptions;
+
 public class TransferService : ITransferService
 {
     Accounts accounts;
@@ -18,7 +20,7 @@ public class TransferService : ITransferService
             accounts.Add(debitAccount);
         }
 
-        if(creditAccount is null) throw new InvalidOperationException($"Credit account with the id '{creditAccountId}' not found.");
+        if(creditAccount is null) throw new CreditAccountNotFoundException();
         // if(debitAccount is null) throw new InvalidOperationException($"Debit account with the id '{debitAccountId}' not found.");
 
         creditAccount.Credit(amount);

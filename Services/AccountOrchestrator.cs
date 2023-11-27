@@ -1,3 +1,5 @@
+using Services.Exceptions;
+
 public class AccountOrchestrator
 {
     private Accounts accounts;
@@ -11,7 +13,7 @@ public class AccountOrchestrator
     {
         if (accounts.IsExist(accountId))
         {
-            throw new InvalidOperationException($"An account with ID '{accountId}' already exists.");
+            throw new DuplicateAccountIdException();
         }
 
         accounts.Add(new Account(accountId, initialBalance));

@@ -1,4 +1,6 @@
-﻿namespace Services;
+﻿using Services.Exceptions;
+
+namespace Services;
 
 public class TransactionOrchestrator
 {
@@ -15,7 +17,7 @@ public class TransactionOrchestrator
         DateTime transactionDate, string description)
     {
         if (amount < 0)
-            throw new InvalidOperationException("Transfer amount can not be negative");
+            throw new TransferAmountCanNotBeNegativeException();
         transactions.Add(Transaction.Draft(transactionId, transactionDate, description, creditAccountId, debitAccountId,
             amount));
     }
@@ -25,7 +27,7 @@ public class TransactionOrchestrator
     {
         var draft = transactions.FindById(transactionId);
 
-        if (draft is null) throw new InvalidOperationException($"No transaction drafts with the id: {transactionId}");
+        if (draft is null) throw new DraftTransactionNotFoundException();
 
         draft.Commit(transferService);
 

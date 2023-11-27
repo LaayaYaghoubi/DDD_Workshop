@@ -1,4 +1,3 @@
-using System;
 using AutoFixture;
 
 public static class FixtureBuilder
