@@ -18,6 +18,7 @@ public class TransactionOrchestrator
     {
         if (amount < 0)
             throw new TransferAmountCanNotBeNegativeException();
+
         transactions.Add(Transaction.Draft(transactionId, transactionDate, description, creditAccountId, debitAccountId,
             amount));
     }
@@ -25,12 +26,14 @@ public class TransactionOrchestrator
     public void CommitTransfer(
         string transactionId)
     {
-        var draft = transactions.FindById(transactionId);
+        var transaction = transactions.FindById(transactionId);
 
-        if (draft is null) throw new DraftTransactionNotFoundException();
+        if (transaction is null) throw new DraftTransactionNotFoundException();
 
-        draft.Commit(transferService);
+        if (transaction.Status == TransferStatus.Commit) throw new AlreadyCommittedException();
 
-        transactions.Update(draft);
+            transaction.Commit(transferService);
+
+        transactions.Update(transaction);
     }
 }

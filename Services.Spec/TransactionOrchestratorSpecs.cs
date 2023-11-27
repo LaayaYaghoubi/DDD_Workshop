@@ -76,12 +76,12 @@ public class TransactionOrchestratorSpecs
         string description,
         string creditAccountId,
         string debitAccountId,
-        decimal amount
-    )
+        decimal amount,
+        string transactionId)
     {
         amount = Math.Abs(amount);
 
-        sut.DraftTransfer("transaction Id", creditAccountId, debitAccountId, amount, now, description);
+        sut.DraftTransfer(transactionId, creditAccountId, debitAccountId, amount, now, description);
 
         queries.AllDrafts().Should().Contain(new TransferDraftViewModel(
             creditAccountId,
@@ -125,16 +125,18 @@ public class TransactionOrchestratorSpecs
         decimal amount,
         DateTime now,
         string description,
-        string debitAccountId)
+        string debitAccountId,
+        decimal five)
     {
         amount = Math.Abs(amount);
+        five = Math.Abs(five);
         var creditAccount = Build.AnAccount.WithBalance(amount).Please();
 
         accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
 
         sut.DraftTransfer(transactionId,
             creditAccount.Id, debitAccountId,
-            (amount + 1), now, description);
+            (amount + five), now, description);
 
         var transferAction = () => sut.CommitTransfer(transactionId);
 
@@ -162,5 +164,56 @@ public class TransactionOrchestratorSpecs
 
         transferAction.Should()
             .ThrowExactly<CreditAccountNotFoundException>();
+    }
+
+    [Theory, AutoMoqData]
+    public void Transfer_from_nonexistent_transaction_fails(
+        [Frozen] Accounts __,
+        [Frozen(Matching.ImplementedInterfaces)]
+        TransferService _,
+        TransactionOrchestrator sut,
+        AccountOrchestrator accountService,
+        string transactionId,
+        decimal amount)
+    {
+        amount = Math.Abs(amount);
+        var creditAccount = Build.AnAccount.WithBalance(amount + 25000).Please();
+
+        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
+
+        var transferAction = () => sut.CommitTransfer(transactionId);
+
+        transferAction.Should()
+            .ThrowExactly<DraftTransactionNotFoundException>();
+    }
+
+    [Theory, AutoMoqData]
+    public void Committed_transaction_can_not_commit_again(
+        string debitAccountId,
+        string creditAccountId,
+        [Frozen] Accounts __,
+        [Frozen(Matching.ImplementedInterfaces)]
+        TransferService _,
+        TransactionOrchestrator sut,
+        AccountOrchestrator accountOrchestrator,
+        string transactionId,
+        decimal amount,
+        DateTime now,
+        string description
+    )
+    {
+        amount = Math.Abs(amount);
+
+        accountOrchestrator.OpenAccount(creditAccountId, amount + 20000);
+
+        sut.DraftTransfer(transactionId,
+            creditAccountId, debitAccountId,
+            amount, now, description);
+
+        sut.CommitTransfer(transactionId);
+
+        var commitAction = () => sut.CommitTransfer(transactionId);
+
+        commitAction.Should().ThrowExactly<AlreadyCommittedException>();
     }
 }
