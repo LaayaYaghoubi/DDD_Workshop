@@ -92,6 +92,36 @@ public class TransactionOrchestratorSpecs
     }
 
     [Theory, AutoMoqData]
+    public void Drafts_a_new_transaction_with_duplicate_transaction_identity_fails(
+        string debitAccountId,
+        string creditAccountId,
+        [Frozen] Accounts __,
+        [Frozen(Matching.ImplementedInterfaces)]
+        TransferService _,
+        TransactionOrchestrator sut,
+        AccountOrchestrator accountOrchestrator,
+        string transactionId,
+        decimal amount,
+        DateTime now,
+        string description
+    )
+    {
+        amount = Math.Abs(amount);
+
+        accountOrchestrator.OpenAccount(creditAccountId, amount + 20000);
+
+        sut.DraftTransfer(transactionId,
+            creditAccountId, debitAccountId,
+            amount, now, description);
+
+        var draftAction = () => sut.DraftTransfer(transactionId,
+            creditAccountId, debitAccountId,
+            amount, now, description);
+
+        draftAction.Should().ThrowExactly<DuplicateTransactionIdException>();
+    }
+
+    [Theory, AutoMoqData]
     public void Transfer_negative_amount_fails(
         [Frozen] Accounts __,
         [Frozen(Matching.ImplementedInterfaces)]

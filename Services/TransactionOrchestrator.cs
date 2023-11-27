@@ -13,12 +13,20 @@ public class TransactionOrchestrator
         this.transferService = transferService;
     }
 
-    public void DraftTransfer(string transactionId, string creditAccountId, string debitAccountId, decimal amount,
-        DateTime transactionDate, string description)
+    public void DraftTransfer(string transactionId, 
+        string creditAccountId,
+        string debitAccountId,
+        decimal amount,
+        DateTime transactionDate,
+        string description)
     {
+        var transaction = transactions.FindById(transactionId);
+        
+        if (transaction is  not null) throw new DuplicateTransactionIdException();
+        
         if (amount < 0)
             throw new TransferAmountCanNotBeNegativeException();
-
+        
         transactions.Add(Transaction.Draft(transactionId, transactionDate, description, creditAccountId, debitAccountId,
             amount));
     }
