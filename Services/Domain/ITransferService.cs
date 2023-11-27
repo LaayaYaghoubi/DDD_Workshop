@@ -1,4 +1,4 @@
 public interface ITransferService
 {
-    void Transfer(string creditAccountId, string debitAccountId, decimal amount);
+    void Transfer(string creditAccountId, string debitAccountId, Money amount);
 }

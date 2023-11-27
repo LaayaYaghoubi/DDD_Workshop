@@ -1,7 +1,7 @@
 public record TransferDraftViewModel(
     string creditAccountId,
     string debitAccountId,
-    decimal amount,
+    decimal balance,
     DateTime date);
 
 
@@ -18,7 +18,7 @@ public class TransactionQueries
         .Select(t => new TransferDraftViewModel(
             t.CreditAccountId,
             t.DebitAccountId,
-            t.Amount,
+            t.Amount.Value,
             t.Date
         ));
 

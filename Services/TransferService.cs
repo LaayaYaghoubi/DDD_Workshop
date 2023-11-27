@@ -7,14 +7,14 @@ public class TransferService : ITransferService
         this.accounts = accounts;
     }
 
-    public void Transfer(string creditAccountId, string debitAccountId, decimal amount)
+    public void Transfer(string creditAccountId, string debitAccountId, Money amount)
     {
         var creditAccount = accounts.FindById(creditAccountId);
         var debitAccount = accounts.FindById(debitAccountId);
 
         if (debitAccount is null)
         {
-            debitAccount = new Account(debitAccountId);
+            debitAccount = new Account(debitAccountId, 0);
             accounts.Add(debitAccount);
         }
 

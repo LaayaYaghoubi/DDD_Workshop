@@ -11,7 +11,7 @@ public class Transaction
 
     public string CreditAccountId { get; }
     public string DebitAccountId { get; }
-    public decimal Amount { get; }
+    public Money Amount { get; }
 
     public string Id { get; private set; }
     public DateTime Date { get; private set; }
@@ -23,7 +23,7 @@ public class Transaction
         string description,
         string creditAccountId,
         string debitAccountId,
-        decimal amount)
+        Money amount)
     {
         Id = id;
         Date = date;
@@ -39,7 +39,7 @@ public class Transaction
         string description,
         string creditAccountId,
         string debitAccountId,
-        decimal amount)
+        Money amount)
     => new Transaction(
         id,
         date,

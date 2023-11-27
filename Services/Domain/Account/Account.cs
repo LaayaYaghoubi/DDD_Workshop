@@ -1,16 +1,14 @@
 public class Account
 {
-    public Account(string id, decimal initialBalance = 0)
+    public Account(string id, Money initialBalance)
     {
-        if(initialBalance < 0) throw new InvalidOperationException("Accounts cannot be initialized with negative balance.");
-
         Id = id;
         Balance = initialBalance;
     }
     public string Id { get; }
-    public decimal Balance { get; private set; }
+    public Money Balance { get; private set; }
 
-    public void Credit(decimal amount)
+    public void Credit(Money amount)
     { 
         if (Balance <= amount)
             throw new InvalidOperationException("No enough charge");
@@ -18,7 +16,7 @@ public class Account
         Balance -= amount;
     }
 
-    public void Debit(decimal amount)
+    public void Debit(Money amount)
     {
         Balance += amount;       
     }
