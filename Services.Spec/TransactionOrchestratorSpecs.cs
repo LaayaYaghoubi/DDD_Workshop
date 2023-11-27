@@ -105,7 +105,7 @@ public class TransactionOrchestratorSpecs
         var negativeAmount = -Math.Abs(amount);
         var creditAccount = Build.AnAccount.Please();
 
-        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance);
+        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
 
         var transferAction = () =>
             sut.DraftTransfer("transaction Id", creditAccount.Id, debitAccountId, negativeAmount, now, description);
@@ -129,7 +129,7 @@ public class TransactionOrchestratorSpecs
         amount = Math.Abs(amount);
         var creditAccount = Build.AnAccount.WithBalance(amount).Please();
 
-        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance);
+        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
 
         sut.DraftTransfer(transactionId,
             creditAccount.Id, debitAccountId,

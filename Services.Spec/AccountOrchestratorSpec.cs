@@ -37,7 +37,7 @@ public class AccountOrchestratorSpec
     )
     {
         var account = Build.AnAccount.WithId(accountId).WithBalance(Math.Abs(balance)).Please();
-        accountOrchestrator.OpenAccount(account.Id, account.Balance);
+        accountOrchestrator.OpenAccount(account.Id, account.Balance.Value);
 
         var openAccountAction = () => accountOrchestrator.OpenAccount(accountId, Math.Abs(balance));
 
