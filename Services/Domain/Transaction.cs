@@ -1,24 +1,23 @@
+
+public enum TransferStatus
+{
+    Commit,
+    Draft,
+}
+
 public class Transaction
 {
-    class Transfer
-    {
-        public string CreditAccountId { get; }
-        public string DebitAccountId { get; }
-        public decimal Amount { get; }
-        public Transfer(
-            string creditAccountId,
-            string debitAccountId,
-            decimal amount)
-        {
-            CreditAccountId = creditAccountId;
-            DebitAccountId = debitAccountId;
-            Amount = amount;
-        }
-    }
+
+
+    public string CreditAccountId { get; }
+    public string DebitAccountId { get; }
+    public decimal Amount { get; }
 
     public string Id { get; private set; }
     public DateTime Date { get; private set; }
     public string Description { get; private set; }
+    public TransferStatus Status { get; private set; } = TransferStatus.Draft;
+
     protected Transaction(string id,
         DateTime date,
         string description,
@@ -29,9 +28,11 @@ public class Transaction
         Id = id;
         Date = date;
         Description = description;
-        draft = new Transfer(creditAccountId, debitAccountId, amount);
+        CreditAccountId = creditAccountId;
+        DebitAccountId = debitAccountId;
+        Amount = amount;
     }
-    Transfer? draft = null;
+
     public static Transaction Draft(
         string id,
         DateTime date,
@@ -47,9 +48,10 @@ public class Transaction
         debitAccountId,
         amount
     );
+
     public void Commit(ITransferService transferService)
     {
-        if (draft is null) throw new InvalidOperationException("No drafts");
-        transferService.Transfer(draft.CreditAccountId, draft.DebitAccountId, draft.Amount);
+        transferService.Transfer(CreditAccountId, DebitAccountId, Amount);
+        Status = TransferStatus.Commit;
     }
 }

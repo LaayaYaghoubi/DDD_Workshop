@@ -8,7 +8,7 @@ public class AccountOrchestratorSpec
     [Theory, AutoMoqData]
     public void Opens_a_new_account(string accountId, decimal balance,
         [Frozen] Accounts _,
-        TransactionQueries queries,
+        AccountQueries queries,
         AccountOrchestrator accountOrchestrator
     )
     {

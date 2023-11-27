@@ -1,12 +1,25 @@
+public record TransferDraftViewModel(
+    string creditAccountId,
+    string debitAccountId,
+    decimal amount,
+    DateTime date);
+
+
 public class TransactionQueries
 {
-    Accounts accounts;
-    public TransactionQueries(Accounts accounts)
-    =>this.accounts = accounts;
-    public BalanceViewModel? GetBalanceForAccount(string accountId)
+    readonly Transactions transactions;
+    public TransactionQueries(Transactions transactions)
     {
-        var theAccount= accounts.FindById(accountId);
-        if(theAccount is null) return null;
-        return new BalanceViewModel(Id: theAccount.Id, Balance:theAccount.Balance);
+        this.transactions = transactions;
     }
+    public IEnumerable<TransferDraftViewModel> AllDrafts()
+    => transactions.All()
+        .Where(t => t.Status == TransferStatus.Draft)
+        .Select(t => new TransferDraftViewModel(
+            t.CreditAccountId,
+            t.DebitAccountId,
+            t.Amount,
+            t.Date
+        ));
+
 }

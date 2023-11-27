@@ -11,24 +11,24 @@ public class TransactionOrchestrator
         this.transferService = transferService;
     }
 
-    public void Transfer(
-        string creditAccountId,
-        string debitAccountId,
-        decimal amount)
+    public void DraftTransfer(string transactionId, string creditAccountId, string debitAccountId, decimal amount,
+        DateTime transactionDate, string description)
     {
         if (amount < 0)
             throw new InvalidOperationException("Transfer amount can not be negative");
-        
-        var transaction = Transaction.Draft(
-            Guid.NewGuid().ToString(),
-            DateTime.Now,
-            "Salary",
-            creditAccountId,
-            debitAccountId,
-            amount);
+        transactions.Add(Transaction.Draft(transactionId, transactionDate, description, creditAccountId, debitAccountId,
+            amount));
+    }
 
-        transaction.Commit(transferService);
+    public void CommitTransfer(
+        string transactionId)
+    {
+        var draft = transactions.FindById(transactionId);
 
-        transactions.Add(transaction);
+        if (draft is null) throw new InvalidOperationException($"No transaction drafts with the id: {transactionId}");
+
+        draft.Commit(transferService);
+
+        transactions.Update(draft);
     }
 }
