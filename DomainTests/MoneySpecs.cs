@@ -13,7 +13,7 @@ public class MoneySpecs
     [Theory, AutoData]
     public void Money_can_be_positive(decimal amount)
     {
-        Build.AMoney.WithPositiveValue(amount).Please()
+        Build.AMoney.WithValue(amount).Please()
             
             .Value.Should().Be(amount);
     }
@@ -21,7 +21,7 @@ public class MoneySpecs
     [Theory, AutoData]
     public void Money_can_be_zero(decimal amount)
     {
-        Build.AMoney.WithPositiveValue(amount - amount).Please()
+        Build.AMoney.WithValue(amount - amount).Please()
             
             .Value.Should().Be(amount - amount);
     }
@@ -30,7 +30,7 @@ public class MoneySpecs
     public void Money_cannot_be_negative(decimal amount)
         => new Action(() => 
                 
-                Build.AMoney.WithNegativeValue(amount).Please()) 
+                Build.AMoney.WithValue(amount.ConvertToNegative()).Please()) 
             
             .Should().Throw<MoneyCanNotBeNegativeException>();
 
@@ -38,7 +38,7 @@ public class MoneySpecs
     public void Supports_subtraction_when_left_is_greater(uint five)
     {
         var right = AValidMoney();
-        var left = Build.AMoney.WithPositiveValue(right.Value + five).Please();
+        var left = Build.AMoney.WithValue(right.Value + five).Please();
         
         (left - right)
             
@@ -49,18 +49,19 @@ public class MoneySpecs
     public void Supports_subtraction_when_left_is_equal_to_right()
     {
         var right = AValidMoney();
-        var left = Build.AMoney.WithPositiveValue(right.Value).Please();
+        var left = Build.AMoney.WithValue(right.Value).Please();
+        var expected = left.Value - right.Value;
         
         (left - right)
             
-            .Value.Should().Be(left.Value - left.Value);
+            .Value.Should().Be(expected);
     }
 
     [Theory, AutoData]
     public void Does_not_support_subtraction_when_left_is_less_than_right(uint five)
     {
         var left = AValidMoney();
-        var right = Build.AMoney.WithPositiveValue(left.Value + five).Please();
+        var right = Build.AMoney.WithValue(left.Value + five).Please();
 
         
         var subtractAction = () => left - right;
@@ -73,32 +74,33 @@ public class MoneySpecs
     {
         var left = AValidMoney();
         var right = AValidMoney();
+        var expected = right.Value + left.Value;
 
         (left + right)
             
-            .Value.Should().Be(left.Value + right.Value);
+            .Value.Should().Be(expected);
     }
 
     [Theory, AutoData]
     public void Supports_greater_than(decimal five)
     {
         var smallerNumber = AValidMoney();
-        var biggerNumber = Build.AMoney.WithPositiveValue(smallerNumber.Value + five).Please();
+        var biggerNumber = Build.AMoney.WithValue(smallerNumber.Value + five).Please();
 
         (biggerNumber > smallerNumber)
             
-            .Should().Be(biggerNumber.Value > smallerNumber.Value);
+            .Should().BeTrue();
     }
 
     [Theory, AutoData]
     public void Supports_less_than(decimal five)
     {
         var smallerNumber = AValidMoney();
-        var biggerNumber = Build.AMoney.WithPositiveValue(smallerNumber.Value + five).Please();
+        var biggerNumber = Build.AMoney.WithValue(smallerNumber.Value + five).Please();
 
         (smallerNumber < biggerNumber)
             
-            .Should().Be(smallerNumber.Value < biggerNumber.Value);
+            .Should().BeTrue();
     }
 
     [Theory]
@@ -107,12 +109,12 @@ public class MoneySpecs
     [InlineAutoData(0, 0)]
     public void Supports_greater_than_or_equal(decimal bigger, decimal smaller)
     {
-        var biggerNumber = Build.AMoney.WithPositiveValue(bigger).Please();
-        var smallerNumber = Build.AMoney.WithPositiveValue(smaller).Please();
-        
+        var biggerNumber = Build.AMoney.WithValue(bigger).Please();
+        var smallerNumber = Build.AMoney.WithValue(smaller).Please();
+
         (biggerNumber >= smallerNumber)
             
-            .Should().Be(bigger >= smaller);
+            .Should().BeTrue();
     }
 
     [Theory]
@@ -121,11 +123,11 @@ public class MoneySpecs
     [InlineAutoData(0, 0)]
     public void Supports_less_than_or_equal(decimal bigger, decimal smaller)
     {
-        var smallerNumber = Build.AMoney.WithPositiveValue(smaller).Please();
-        var biggerNumber = Build.AMoney.WithPositiveValue(bigger).Please();
-        
+        var smallerNumber = Build.AMoney.WithValue(smaller).Please();
+        var biggerNumber = Build.AMoney.WithValue(bigger).Please();
+
         (smallerNumber <= biggerNumber)
             
-            .Should().Be(smaller <= bigger);
+            .Should().BeTrue();
     }
 }

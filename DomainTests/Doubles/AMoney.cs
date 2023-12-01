@@ -4,18 +4,11 @@ public class AMoney
 {
     decimal value = 0;
 
-    public AMoney WithPositiveValue(decimal value)
+    public AMoney WithValue(decimal value)
     {
-        this.value = Math.Abs(value);
+        this.value = value;
         return this;
     }
 
-    public AMoney WithNegativeValue(decimal value)
-    {
-        this.value = -Math.Abs(value);
-        return this;
-    }
-
-    public Money Please()
-        => new Money(value);
+    public Money Please() => new(value);
 }
