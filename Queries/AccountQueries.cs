@@ -7,6 +7,6 @@ public class AccountQueries
     {
         var theAccount= accounts.FindById(accountId);
         if(theAccount is null) return null;
-        return new BalanceViewModel(Id: theAccount.Id, Balance:theAccount.Balance.Value);
+        return new BalanceViewModel(Id: theAccount.Id.Id, Balance:theAccount.Balance.Value);
     }
 }

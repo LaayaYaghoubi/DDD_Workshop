@@ -2,13 +2,13 @@ using Services.Exceptions;
 
 public class Account
 {
-    public Account(string id, Money initialBalance)
+    public Account(AccountId id, Money initialBalance)
     {
         Id = id;
         Balance = initialBalance;
     }
 
-    public string Id { get; }
+    public AccountId Id { get; }
     public Money Balance { get; private set; }
 
     public void Credit(Money amount)
