@@ -1,4 +1,5 @@
-﻿using Services.Exceptions;
+﻿using Services.Domain.Transaction;
+using Services.Exceptions;
 
 namespace Services;
 
@@ -13,22 +14,23 @@ public class TransactionOrchestrator
         this.transferService = transferService;
     }
 
-    public void DraftTransfer(string transactionId, 
+    public void DraftTransfer(string transactionId,
+        DateTime transactionDate,
         string creditAccountId,
         string debitAccountId,
-        decimal amount,
-        DateTime transactionDate,
-        string description)
+        decimal amount)
     {
         var transaction = transactions.FindById(transactionId);
-        
-        if (transaction is  not null) throw new DuplicateTransactionIdException();
-        
-        if (amount < 0)
-            throw new TransferAmountCanNotBeNegativeException();
-        
-        transactions.Add(Transaction.Draft(transactionId, transactionDate, description, creditAccountId, debitAccountId,
-            amount));
+
+        if (transaction is not null) throw new DuplicateTransactionIdException();
+
+        var transferRequest = new TransferRequest(creditAccountId, debitAccountId, amount);
+
+
+        transactions.Add(Transaction.Draft(
+            transactionId,
+            transactionDate,
+            transferRequest));
     }
 
     public void CommitTransfer(
@@ -40,7 +42,7 @@ public class TransactionOrchestrator
 
         if (transaction.Status == TransferStatus.Commit) throw new AlreadyCommittedException();
 
-            transaction.Commit(transferService);
+        transaction.Commit(transferService);
 
         transactions.Update(transaction);
     }

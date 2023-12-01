@@ -7,7 +7,7 @@ public class Transactions
     => records.Add(transaction);
 
     public Transaction? FindById(string id)
-    => All().FirstOrDefault(tx => tx.Id == id);
+    => All().FirstOrDefault(tx => tx.Id.Id == id);
 
     public IEnumerable<Transaction> All()
     => records;

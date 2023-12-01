@@ -18,17 +18,19 @@ public class TransactionOrchestratorSpecs
         AccountQueries queries,
         string transactionId,
         decimal amount,
-        DateTime now,
-        string description
+        DateTime now
     )
     {
         amount = Math.Abs(amount);
 
         accountOrchestrator.OpenAccount(creditAccountId, amount + 20000);
 
-        sut.DraftTransfer(transactionId,
-            creditAccountId, debitAccountId,
-            amount, now, description);
+        sut.DraftTransfer(
+            transactionId,
+            now,
+            creditAccountId,
+            debitAccountId,
+            amount);
 
         sut.CommitTransfer(transactionId);
 
@@ -48,22 +50,24 @@ public class TransactionOrchestratorSpecs
         string transactionId,
         decimal amount,
         DateTime now,
-        string description,
         string debitAccountId
     )
     {
         amount = Math.Abs(amount);
         var creditAccount = Build.AnAccount.WithBalance(amount + 25000).Please();
 
-        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
+        accountService.OpenAccount(creditAccount.Id.Id, creditAccount.Balance.Value);
 
-        sut.DraftTransfer(transactionId,
-            creditAccount.Id, debitAccountId,
-            amount, now, description);
+        sut.DraftTransfer(
+            transactionId,
+            now,
+            creditAccount.Id.Id,
+            debitAccountId,
+            amount);
 
         sut.CommitTransfer(transactionId);
 
-        queries.GetBalanceForAccount(creditAccount.Id).Should()
+        queries.GetBalanceForAccount(creditAccount.Id.Id).Should()
             .BeEquivalentTo(new { Balance = 25000 });
     }
 
@@ -73,7 +77,6 @@ public class TransactionOrchestratorSpecs
         TransactionOrchestrator sut,
         TransactionQueries queries,
         DateTime now,
-        string description,
         string creditAccountId,
         string debitAccountId,
         decimal amount,
@@ -81,7 +84,12 @@ public class TransactionOrchestratorSpecs
     {
         amount = Math.Abs(amount);
 
-        sut.DraftTransfer(transactionId, creditAccountId, debitAccountId, amount, now, description);
+        sut.DraftTransfer(
+            transactionId,
+            now,
+            creditAccountId,
+            debitAccountId,
+            amount);
 
         queries.AllDrafts().Should().Contain(new TransferDraftViewModel(
             creditAccountId,
@@ -102,21 +110,26 @@ public class TransactionOrchestratorSpecs
         AccountOrchestrator accountOrchestrator,
         string transactionId,
         decimal amount,
-        DateTime now,
-        string description
+        DateTime now
     )
     {
         amount = Math.Abs(amount);
 
         accountOrchestrator.OpenAccount(creditAccountId, amount + 20000);
 
-        sut.DraftTransfer(transactionId,
-            creditAccountId, debitAccountId,
-            amount, now, description);
+        sut.DraftTransfer(
+            transactionId,
+            now,
+            creditAccountId,
+            debitAccountId,
+            amount);
 
-        var draftAction = () => sut.DraftTransfer(transactionId,
-            creditAccountId, debitAccountId,
-            amount, now, description);
+        var draftAction = () =>  sut.DraftTransfer(
+            transactionId,
+            now,
+            creditAccountId,
+            debitAccountId,
+            amount);
 
         draftAction.Should().ThrowExactly<DuplicateTransactionIdException>();
     }
@@ -130,18 +143,24 @@ public class TransactionOrchestratorSpecs
         AccountOrchestrator accountService,
         decimal amount,
         DateTime now,
-        string description,
+        string transactionId,
         string debitAccountId)
     {
         var negativeAmount = -Math.Abs(amount);
         var creditAccount = Build.AnAccount.Please();
 
-        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
+        accountService.OpenAccount(creditAccount.Id.Id, creditAccount.Balance.Value);
 
         var transferAction = () =>
-            sut.DraftTransfer("transaction Id", creditAccount.Id, debitAccountId, negativeAmount, now, description);
+            sut.DraftTransfer(
+                transactionId, 
+                now,
+                creditAccount.Id.Id, 
+                debitAccountId, 
+                
+                negativeAmount);
 
-        transferAction.Should().ThrowExactly<TransferAmountCanNotBeNegativeException>();
+        transferAction.Should().ThrowExactly<TransferAmountCanNotBeNegativeOrZeroException>();
     }
 
     [Theory, AutoMoqData]
@@ -154,7 +173,6 @@ public class TransactionOrchestratorSpecs
         string transactionId,
         decimal amount,
         DateTime now,
-        string description,
         string debitAccountId,
         decimal five)
     {
@@ -162,11 +180,14 @@ public class TransactionOrchestratorSpecs
         five = Math.Abs(five);
         var creditAccount = Build.AnAccount.WithBalance(amount).Please();
 
-        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
+        accountService.OpenAccount(creditAccount.Id.Id, creditAccount.Balance.Value);
 
-        sut.DraftTransfer(transactionId,
-            creditAccount.Id, debitAccountId,
-            (amount + five), now, description);
+        sut.DraftTransfer(
+            transactionId,
+            now,
+        creditAccount.Id.Id, 
+            debitAccountId,
+            (amount + five));
 
         var transferAction = () => sut.CommitTransfer(transactionId);
 
@@ -182,13 +203,16 @@ public class TransactionOrchestratorSpecs
         string transactionId,
         decimal amount,
         DateTime now,
-        string description,
         string debitAccountId,
         string dummyCreditAccountId)
     {
-        sut.DraftTransfer(transactionId,
-            dummyCreditAccountId, debitAccountId,
-            (amount + 1), now, description);
+        sut.DraftTransfer(
+            transactionId,
+            now,
+            dummyCreditAccountId, 
+            debitAccountId,
+            
+            (amount + 1));
 
         var transferAction = () => sut.CommitTransfer(transactionId);
 
@@ -209,7 +233,7 @@ public class TransactionOrchestratorSpecs
         amount = Math.Abs(amount);
         var creditAccount = Build.AnAccount.WithBalance(amount + 25000).Please();
 
-        accountService.OpenAccount(creditAccount.Id, creditAccount.Balance.Value);
+        accountService.OpenAccount(creditAccount.Id.Id, creditAccount.Balance.Value);
 
         var transferAction = () => sut.CommitTransfer(transactionId);
 
@@ -228,17 +252,19 @@ public class TransactionOrchestratorSpecs
         AccountOrchestrator accountOrchestrator,
         string transactionId,
         decimal amount,
-        DateTime now,
-        string description
+        DateTime now
     )
     {
         amount = Math.Abs(amount);
 
         accountOrchestrator.OpenAccount(creditAccountId, amount + 20000);
 
-        sut.DraftTransfer(transactionId,
-            creditAccountId, debitAccountId,
-            amount, now, description);
+        sut.DraftTransfer(
+            transactionId,
+            now,
+            creditAccountId, 
+            debitAccountId,
+            amount);
 
         sut.CommitTransfer(transactionId);
 
