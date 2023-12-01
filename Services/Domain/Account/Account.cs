@@ -1,3 +1,4 @@
+using Services.Domain.SharedValueObject;
 using Services.Exceptions;
 
 public class Account
