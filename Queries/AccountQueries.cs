@@ -1,3 +1,5 @@
+using Domain.Account;
+
 public class AccountQueries
 {
     Accounts accounts;

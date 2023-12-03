@@ -1,5 +1,6 @@
-using Services.Domain.Transaction;
-using Services.Exceptions;
+using Domain;
+using Domain.Account;
+using Domain.Transaction;
 
 public class TransferService : ITransferService
 {
@@ -10,22 +11,26 @@ public class TransferService : ITransferService
         this.accounts = accounts;
     }
 
-    public void Transfer(TransferRequest transferRequest)
+    public void Transfer(TransferRequest transferRequest, DateTime dateTime)
     {
-        var creditAccount = accounts.FindById(transferRequest.CreditAccountId.Id);
-        var debitAccount = accounts.FindById(transferRequest.DebitAccountId.Id);
+        var creditAccountId = transferRequest.Parties.CreditAccountId;
+        var debitAccountId = transferRequest.Parties.DebitAccountId;
+        var amount = transferRequest.Amount;
+        
+        var creditAccount = accounts.FindById(creditAccountId);
+        var debitAccount = accounts.FindById(debitAccountId);
 
         if (debitAccount is null)
         {
-            debitAccount = new Account(transferRequest.DebitAccountId, 0);
+            debitAccount = new Account(debitAccountId, 0);
             accounts.Add(debitAccount);
         }
 
-        if(creditAccount is null) throw new CreditAccountNotFoundException();
+        if(creditAccount is null) throw new InvalidOperationException($"Credit account with the id '{creditAccountId}' not found.");
         // if(debitAccount is null) throw new InvalidOperationException($"Debit account with the id '{debitAccountId}' not found.");
 
-        creditAccount.Credit(transferRequest.Amount);
-        debitAccount.Debit(transferRequest.Amount);
+        creditAccount.Credit(amount);
+        debitAccount.Debit(amount);
 
         accounts.Update(creditAccount);
         accounts.Update(debitAccount);

@@ -1,4 +1,4 @@
-using Services.Domain.SharedValueObject;
+using Domain.Account;
 using Services.Exceptions;
 
 public class AccountOrchestrator

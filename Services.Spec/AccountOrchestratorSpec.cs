@@ -1,4 +1,5 @@
 using AutoFixture.Xunit2;
+using Domain.Account;
 using FluentAssertions;
 using Services.Exceptions;
 
@@ -8,7 +9,7 @@ public class AccountOrchestratorSpec
 {
     [Theory, AutoMoqData]
     public void Opens_a_new_account(string accountId, decimal balance,
-        [Frozen] Accounts _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
         AccountQueries queries,
         AccountOrchestrator accountOrchestrator
     )

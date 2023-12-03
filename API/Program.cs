@@ -1,3 +1,6 @@
+using Domain;
+using Domain.Account;
+using Domain.Transaction;
 using Services;
 
 var builder = WebApplication.CreateBuilder();

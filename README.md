@@ -1,0 +1,2 @@
+## Resources
+[C# Class vs Struct vs Record](https://tutorials.eu/c-sharp-class-vs-struct-vs-record/#:~:text=Classes%20are%20reference%20types%2C%20structs,to%20represent%20small%2C%20lightweight%20objects.)

@@ -23,7 +23,6 @@ namespace API.Controllers
         {
             _transactionOrchestrator.DraftTransfer(
                 addDraftTransferDto.TransactionId,
-                addDraftTransferDto.TransactionDate,
                 addDraftTransferDto.CreditAccountId,
                 addDraftTransferDto.DebitAccountId,
                 addDraftTransferDto.Amount);
@@ -43,6 +42,6 @@ namespace API.Controllers
     }
 
     public record AddDraftTransferDto(
-        string TransactionId, DateTime TransactionDate, string CreditAccountId, string DebitAccountId,
+        string TransactionId, string CreditAccountId, string DebitAccountId,
         decimal Amount);
 }

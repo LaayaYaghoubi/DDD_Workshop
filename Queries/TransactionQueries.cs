@@ -1,10 +1,9 @@
-using Services.Domain.Transaction;
+using Domain.Transaction;
 
 public record TransferDraftViewModel(
     string creditAccountId,
     string debitAccountId,
-    decimal balance,
-    DateTime date);
+    decimal balance);
 
 
 public class TransactionQueries
@@ -18,10 +17,9 @@ public class TransactionQueries
     => transactions.All()
         .Where(t => t.Status == TransferStatus.Draft)
         .Select(t => new TransferDraftViewModel(
-            t.TransferRequest.CreditAccountId.Id,
-            t.TransferRequest.DebitAccountId.Id,
-            t.TransferRequest.Amount.Value,
-            t.Date
+            t.TransferRequest.Parties.CreditAccountId.Id,
+            t.TransferRequest.Parties.DebitAccountId.Id,
+            t.TransferRequest.Amount.Value
         ));
 
 }
