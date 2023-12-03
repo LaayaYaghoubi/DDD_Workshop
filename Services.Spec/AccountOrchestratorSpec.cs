@@ -1,5 +1,6 @@
 using AutoFixture.Xunit2;
 using Domain.Account;
+using Domain.SharedValueObject.Exceptions;
 using FluentAssertions;
 using Services.Exceptions;
 
@@ -20,8 +21,10 @@ public class AccountOrchestratorSpec
 
 
     [Theory, AutoMoqData]
-    public void Opens_a_new_account_with_negative_initial_balance_fails(string accountId, decimal balance,
-        [Frozen] Accounts _,
+    public void Opens_a_new_account_with_negative_initial_balance_fails(
+        string accountId,
+        decimal balance,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
         AccountOrchestrator accountOrchestrator
     )
     {
@@ -33,8 +36,10 @@ public class AccountOrchestratorSpec
 
 
     [Theory, AutoMoqData]
-    public void Opens_a_new_account_with_same_account_id_fails(string accountId, decimal balance,
-        [Frozen] Accounts _,
+    public void Opens_a_new_account_with_same_account_id_fails(
+        string accountId,
+        decimal balance,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
         AccountOrchestrator accountOrchestrator
     )
     {

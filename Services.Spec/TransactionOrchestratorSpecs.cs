@@ -1,8 +1,10 @@
 using AutoFixture.Xunit2;
 using Domain.Account;
+using Domain.SharedValueObject.Exceptions;
 using Domain.Transaction;
 using FluentAssertions;
 using Services.Exceptions;
+using NoEnoughChargeException = Domain.Account.Exceptions.NoEnoughChargeException;
 
 namespace Services.Spec;
 
@@ -12,9 +14,9 @@ public class TransactionOrchestratorSpecs
     public void Transfer_adds_the_balance_to_the_debit_account(
         string debitAccountId,
         string creditAccountId,
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         AccountOrchestrator accountOrchestrator,
         AccountQueries queries,
@@ -41,9 +43,9 @@ public class TransactionOrchestratorSpecs
 
     [Theory, AutoMoqData]
     public void Transfer_subtracts_the_balance_from_the_credit_account(
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         AccountOrchestrator accountService,
         AccountQueries queries,
@@ -71,7 +73,9 @@ public class TransactionOrchestratorSpecs
 
     [Theory, AutoMoqData]
     public void Drafts_a_new_transaction(
-        [Frozen] Transactions _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         TransactionQueries queries,
         string creditAccountId,
@@ -98,9 +102,9 @@ public class TransactionOrchestratorSpecs
     public void Drafts_a_new_transaction_with_duplicate_transaction_identity_fails(
         string debitAccountId,
         string creditAccountId,
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         AccountOrchestrator accountOrchestrator,
         string transactionId,
@@ -128,9 +132,9 @@ public class TransactionOrchestratorSpecs
 
     [Theory, AutoMoqData]
     public void Transfer_negative_amount_fails(
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         AccountOrchestrator accountService,
         decimal amount,
@@ -150,14 +154,14 @@ public class TransactionOrchestratorSpecs
                 
                 negativeAmount);
 
-        transferAction.Should().ThrowExactly<TransferAmountCanNotBeNegativeOrZeroException>();
+        transferAction.Should().ThrowExactly<MoneyCanNotBeNegativeException>();
     }
 
     [Theory, AutoMoqData]
     public void Transfer_amount_greater_than_credit_balance_fails(
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         AccountOrchestrator accountService,
         string transactionId,
@@ -184,9 +188,9 @@ public class TransactionOrchestratorSpecs
 
     [Theory, AutoMoqData]
     public void Transfer_from_nonexistent_credit_account_fails(
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         string transactionId,
         decimal amount,
@@ -208,9 +212,9 @@ public class TransactionOrchestratorSpecs
 
     [Theory, AutoMoqData]
     public void Transfer_from_nonexistent_transaction_fails(
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         AccountOrchestrator accountService,
         string transactionId,
@@ -231,9 +235,9 @@ public class TransactionOrchestratorSpecs
     public void Committed_transaction_can_not_commit_again(
         string debitAccountId,
         string creditAccountId,
-        [Frozen] Accounts __,
-        [Frozen(Matching.ImplementedInterfaces)]
-        TransferService _,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryAccounts __,
+        [Frozen(Matching.ImplementedInterfaces)] InMemoryTransactions ___,
+        [Frozen(Matching.ImplementedInterfaces)] TransferService _,
         TransactionOrchestrator sut,
         AccountOrchestrator accountOrchestrator,
         string transactionId,

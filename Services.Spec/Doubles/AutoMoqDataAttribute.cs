@@ -10,7 +10,7 @@ public class AutoMoqDataAttribute : AutoDataAttribute
         {
             var fixture = new Fixture();
             fixture.Customize(new AutoMoqCustomization());
-            fixture.Customizations.Add(new PositiveDecimalBuilder());
+            //fixture.Customizations.Add(new PositiveDecimalBuilder());
             return fixture;
         })
     {

@@ -2,7 +2,7 @@ using Domain.SharedValueObject.Exceptions;
 using DomainTests.Doubles;
 using FluentAssertions;
 
-namespace DomainTests;
+namespace Domain.Spec;
 
 public class AccountIdSpecs
 {
