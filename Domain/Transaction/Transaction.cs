@@ -4,6 +4,10 @@ namespace Domain.Transaction;
 public class Transaction
 {
     public TransferRequest TransferRequest { get; }
+    Queue<IDomainEvent> newEvents = new();
+    public IEnumerable<IDomainEvent> NewEvents => newEvents;
+    public void ClearEvents()
+    => newEvents.Clear();
 
     public TransactionId Id { get; private set; }
     public DateTime Date { get; private set; }
@@ -32,5 +36,13 @@ public class Transaction
     {
         transferService.Transfer(TransferRequest, dateTime);
         Status = TransferStatus.Commit;
+
+        var transferCommited = new TransactionCommited(
+            TransferRequest.Parties.CreditAccountId.Id,
+             TransferRequest.Parties.DebitAccountId.Id,
+              TransferRequest.Amount.Value
+        );
+
+        newEvents.Enqueue(transferCommited);
     }
 }

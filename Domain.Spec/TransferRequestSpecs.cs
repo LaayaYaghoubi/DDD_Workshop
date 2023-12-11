@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using AutoFixture.Xunit2;
-using Domain.SharedValueObject.Exceptions;
+using Domain.Transaction;
 using DomainTests.Doubles;
 using FluentAssertions;
 
@@ -30,25 +30,21 @@ public class TransferRequestSpecs
         string debitAccountId,
         [Range(0.0, 0.0)] decimal amount)
         => new Action(() =>
-                
                 Build.ATransferRequest
                     .WithParties(creditAccountId, debitAccountId)
                     .WithAmount(amount)
                     .Please())
-            
-            .Should().Throw<MoneyCanNotBeNegativeException>();
-    
+            .Should().Throw<CanNotTransferZeroAmountException>();
+
     [Theory, AutoData]
     public void transfer_amount_can_not_be_negative(
         string creditAccountId,
-        string debitAccountId, 
+        string debitAccountId,
         decimal amount)
         => new Action(() =>
-                
                 Build.ATransferRequest
                     .WithParties(creditAccountId, debitAccountId)
                     .WithAmount(amount.ConvertToNegative())
                     .Please())
-            
-            .Should().Throw<MoneyCanNotBeNegativeException>();
+            .Should().Throw<NegativeMoneyException>();
 }

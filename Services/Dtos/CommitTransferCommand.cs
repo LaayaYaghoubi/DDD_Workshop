@@ -1,0 +1,1 @@
+public record CommitTransferCommand(string TransactionId);

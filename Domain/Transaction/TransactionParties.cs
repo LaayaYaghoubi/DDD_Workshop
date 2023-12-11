@@ -9,8 +9,8 @@ public class TransactionParties
 
     public TransactionParties(AccountId creditAccountId, AccountId debitAccountId)
     {
-        if (creditAccountId == debitAccountId) throw new InvalidOperationException("Credit account and debit account cannot be the same");
-        
+        if (creditAccountId == debitAccountId) throw new SameTransactionPartiesException();
+
         CreditAccountId = creditAccountId;
         DebitAccountId = debitAccountId;
     }

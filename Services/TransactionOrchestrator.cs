@@ -8,7 +8,7 @@ public class TransactionOrchestrator
 {
     readonly Transactions transactions;
     readonly ITransferService transferService;
-    private readonly DateTimeService dateTimeService;
+    readonly DateTimeService dateTimeService;
 
     public TransactionOrchestrator(Transactions transactions, ITransferService transferService,
         DateTimeService dateTimeService)
@@ -18,32 +18,28 @@ public class TransactionOrchestrator
         this.dateTimeService = dateTimeService;
     }
 
-    public void DraftTransfer(string transactionId,
-        string creditAccountId,
-        string debitAccountId,
-        decimal amount)
+    public void DraftTransfer(DraftTransferCommand command)
     {
-        var transaction = transactions.FindById(transactionId);
+        var transaction = transactions.FindById(command.TransactionId);
 
         if (transaction is not null) throw new DuplicateTransactionIdException();
 
-        var parties = new TransactionParties(creditAccountId, debitAccountId);
-        var request = new TransferRequest(parties, amount);
-        var draft = Transaction.Draft(transactionId, request);
+        var parties = new TransactionParties(command.CreditAccountId, command.DebitAccountId);
+        var request = new TransferRequest(parties, command.Amount);
+        var draft = Transaction.Draft(command.TransactionId, request);
         transactions.Add(draft);
     }
 
-    public void CommitTransfer(
-        string transactionId)
+    public void CommitTransfer(CommitTransferCommand command)
     {
-        var transaction = transactions.FindById(transactionId);
+        var draft = transactions.FindById(command.TransactionId);
 
-        if (transaction is null) throw new DraftTransactionNotFoundException();
+        if (draft is null) throw new DraftTransactionNotFoundException();
 
-        if (transaction.Status == TransferStatus.Commit) throw new AlreadyCommittedException();
+        if (draft.Status == TransferStatus.Commit) throw new AlreadyCommittedException();
 
-        transaction.Commit(dateTimeService.Now, transferService);
+        draft.Commit(dateTimeService.Now, transferService);
 
-        transactions.Update(transaction);
+        transactions.Update(draft);
     }
 }

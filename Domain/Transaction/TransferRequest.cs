@@ -1,5 +1,4 @@
-using Domain.SharedValueObject;
-using Domain.SharedValueObject.Exceptions;
+
 
 namespace Domain.Transaction;
 
@@ -10,7 +9,7 @@ public class TransferRequest
 
     public TransferRequest(TransactionParties parties, Money amount)
     {
-        if (amount <= 0) throw new MoneyCanNotBeNegativeException();
+        if (amount.Value == 0) throw new CanNotTransferZeroAmountException();
         Parties = parties;
         Amount = amount;
     }

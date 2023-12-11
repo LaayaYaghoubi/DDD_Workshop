@@ -1,4 +1,4 @@
-using Domain.SharedValueObject.Exceptions;
+
 using DomainTests.Doubles;
 using FluentAssertions;
 
@@ -13,6 +13,6 @@ public class TransactionIdSpecs
     {
         Action action = () => Build.ATransactionId.WithId(id).Please();
     
-        action.Should().ThrowExactly<IdCanNotBeNullOrEmptyException>();
+        action.Should().ThrowExactly<TransactionIdFormatException>();
     }
 }

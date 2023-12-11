@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataInMemory", "DataInMemory\DataInMemory.csproj", "{766E7891-19A8-46CE-958F-60B723A5A943}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InternalMessaging", "InternalMessaging\InternalMessaging.csproj", "{723CC730-6F13-47D6-BD00-6D1A61DDB33F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentation\Presentation.csproj", "{B0310B12-F399-4858-A4F1-3CE63E4B0889}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +52,13 @@ Global
 		{766E7891-19A8-46CE-958F-60B723A5A943}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{766E7891-19A8-46CE-958F-60B723A5A943}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{766E7891-19A8-46CE-958F-60B723A5A943}.Release|Any CPU.Build.0 = Release|Any CPU
+		{723CC730-6F13-47D6-BD00-6D1A61DDB33F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{723CC730-6F13-47D6-BD00-6D1A61DDB33F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{723CC730-6F13-47D6-BD00-6D1A61DDB33F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{723CC730-6F13-47D6-BD00-6D1A61DDB33F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0310B12-F399-4858-A4F1-3CE63E4B0889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0310B12-F399-4858-A4F1-3CE63E4B0889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0310B12-F399-4858-A4F1-3CE63E4B0889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0310B12-F399-4858-A4F1-3CE63E4B0889}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

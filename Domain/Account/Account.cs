@@ -1,4 +1,4 @@
-using Domain.Account.Exceptions;
+
 using Domain.SharedValueObject;
 
 namespace Domain.Account;
@@ -10,14 +10,13 @@ public class Account
         Id = id;
         Balance = initialBalance;
     }
-
     public AccountId Id { get; }
     public Money Balance { get; private set; }
 
     public void Credit(Money amount)
     {
         if (Balance <= amount)
-            throw new NoEnoughChargeException();
+            throw new NotEnoughChargeException();
 
         Balance -= amount;
     }

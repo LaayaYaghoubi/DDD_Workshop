@@ -1,4 +1,3 @@
-using Domain.SharedValueObject.Exceptions;
 using DomainTests.Doubles;
 using FluentAssertions;
 
@@ -13,6 +12,6 @@ public class AccountIdSpecs
     {
         Action action = () => Build.AnAccountId.WithId(id).Please();
     
-        action.Should().ThrowExactly<IdCanNotBeNullOrEmptyException>();
+        action.Should().ThrowExactly<AccountIdFormatException>();
     }
 }

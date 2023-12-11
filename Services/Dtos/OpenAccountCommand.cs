@@ -1,0 +1,1 @@
+public record OpenAccountCommand(string AccountId, decimal InitialBalance);

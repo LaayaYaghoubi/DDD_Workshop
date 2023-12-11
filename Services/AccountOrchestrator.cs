@@ -10,13 +10,13 @@ public class AccountOrchestrator
         this.accounts = accounts;
     }
 
-    public void OpenAccount(string accountId, decimal initialBalance)
+    public void OpenAccount(OpenAccountCommand command)
     {
-        if (accounts.IsExist(accountId))
+        if (accounts.IsExist(command.AccountId))
         {
             throw new DuplicateAccountIdException();
         }
 
-        accounts.Add(new Account(accountId, initialBalance));
+        accounts.Add(new Account(command.AccountId, command.InitialBalance));
     }
 }
